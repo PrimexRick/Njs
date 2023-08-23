@@ -1,1 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSFW Image Detection</title>
+    <script src="https://cdn.jsdelivr.net/npm/nsfwjs"></script>
+</head>
+<body>
+    <input type="file" id="imageInput">
+    <div id="result"></div>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const resultDiv = document.getElementById('result');
+
+        imageInput.addEventListener('change', async (event) => {
+            const imageFile = event.target.files[0];
+            if (imageFile) {
+                const nsfwjs = await NSFWJS.load();
+                const image = await nsfwjs.loadImageFromFile(imageFile);
+                const predictions = await nsfwjs.classify(image);
+
+                // Display the prediction results
+                resultDiv.innerHTML = `
+                    <p>NSFW Score: ${predictions.nsfw}</p>
+                    <p>SFW Score: ${predictions.sfw}</p>
+                `;
+
+              
+                if (predictions.nsfw > predictions.sfw) {
+                    resultDiv.innerHTML += '<p>This image is NSFW.</p>';
+                } else {
+                    resultDiv.innerHTML += '<p>This image is safe.</p>';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
 
